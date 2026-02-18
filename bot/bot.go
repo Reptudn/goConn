@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Reptudn/goConn/actions"
 	"github.com/Reptudn/goConn/internal"
 	"github.com/Reptudn/goConn/shared"
+	"github.com/Reptudn/goConn/shared/schmeas/actions"
 )
 
 type CoreGameBot struct {
 	conn     *internal.Connection
 	teamName string
-	teamId   int
+	teamId   uint
 }
 
-func NewCoreGameBot(teamName string, teamId int) (*CoreGameBot, error) {
+func NewCoreGameBot(teamName string, teamId uint) (*CoreGameBot, error) {
 
 	envIp, exists := os.LookupEnv("SERVER_IP")
 	if !exists {
@@ -44,33 +44,33 @@ func (bot *CoreGameBot) GetGame() *shared.Game {
 }
 
 func (bot *CoreGameBot) CreateUnit(unitType shared.UnitType) {
-	actions.CreateUnit(unitType, bot.conn.GetActionQueue())
+	bot.conn.GetActionQueue().Add(actions.NewActionCreate(unitType))
 }
 
 func (bot *CoreGameBot) Move(object *shared.Object, pos shared.Position) {
-	actions.Move(object, pos, bot.conn.GetActionQueue())
+	bot.conn.GetActionQueue().Add(actions.NewActionMove(object.Id, pos.X, pos.Y))
 }
 
 func (bot *CoreGameBot) SimplePathfind(object *shared.Object, pos shared.Position) {
-	actions.SimplePathfind(object, pos, bot.conn.GetActionQueue())
+	panic("unimplemented")
 }
 
 func (bot *CoreGameBot) Attack(object *shared.Object, target *shared.Object) {
-	actions.Attack(object, target, bot.conn.GetActionQueue())
+	bot.conn.GetActionQueue().Add(actions.NewActionAttack(object.Id, target.Id))
 }
 
-func (bot *CoreGameBot) TransferGems(source *shared.Object, targetPos shared.Position, amount uint64) {
-	actions.TransferGems(source, targetPos, amount, bot.conn.GetActionQueue())
+func (bot *CoreGameBot) TransferGems(source *shared.Object, targetPos shared.Position, amount uint) {
+	bot.conn.GetActionQueue().Add(actions.NewActionTransferGems(source.Id, targetPos.X, targetPos.Y, amount))
 }
 
 func (bot *CoreGameBot) Build(builder *shared.Object, pos shared.Position) {
-	actions.Build(builder, pos, bot.conn.GetActionQueue())
+	bot.conn.GetActionQueue().Add(actions.NewActionBuild(builder.Id, pos.X, pos.Y))
 }
 
 func (bot *CoreGameBot) Run(callback func(game *shared.Game)) {
 	bot.conn.SetTickCallback(callback)
-	bot.conn.Start()
-	defer bot.stop()
+	bot.conn.Start(bot.teamId, bot.teamName)
+	defer bot.stop() // XXX: defer probably not needed since Start() is blocking, but just in case
 }
 
 func (bot *CoreGameBot) stop() {

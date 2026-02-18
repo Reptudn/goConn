@@ -1,27 +1,34 @@
 package actions
 
+import "github.com/Reptudn/goConn/shared/schmeas/actions"
+
 type ActionQueue struct {
-	queue chan Action
+	queue      chan actions.Action
+	bufferSize int
 }
 
 func NewActionQueue(bufferSize int) *ActionQueue {
 	return &ActionQueue{
-		queue: make(chan Action, bufferSize),
+		queue:      make(chan actions.Action, bufferSize),
+		bufferSize: bufferSize,
 	}
 }
 
-func (aq *ActionQueue) Add(action Action) {
+func (aq *ActionQueue) Add(action actions.Action) {
 	aq.queue <- action
 }
 
-func (aq *ActionQueue) GetAll() []Action {
-	var actions []Action
+func (aq *ActionQueue) GetAll() []actions.Action {
+	var allActions []actions.Action
 	for {
 		select {
 		case action := <-aq.queue:
-			actions = append(actions, action)
+			if len(allActions) == aq.bufferSize {
+				// TODO: send the actions when full
+			}
+			allActions = append(allActions, action)
 		default:
-			return actions
+			return allActions
 		}
 	}
 }

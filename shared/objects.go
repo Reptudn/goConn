@@ -52,7 +52,7 @@ func (BombData) isObjectData() {}
 type Object struct {
 	Type       ObjectType
 	Data       *any
-	Id         uint64
+	Id         uint
 	Pos        Position
 	Hp         int32
 	ObjectData ObjectData

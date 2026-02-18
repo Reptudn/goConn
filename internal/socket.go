@@ -7,6 +7,8 @@ import (
 
 	"github.com/Reptudn/goConn/actions"
 	"github.com/Reptudn/goConn/shared"
+	"github.com/Reptudn/goConn/shared/schmeas"
+	schema_action "github.com/Reptudn/goConn/shared/schmeas/actions"
 )
 
 type Connection struct {
@@ -32,33 +34,60 @@ func NewConnection(serverAddr string) (*Connection, error) {
 	}, nil
 }
 
-func (connection *Connection) Start() {
-	go func() {
-		buffer := make([]byte, 4096)
-		for {
-			n, err := connection.reader.Read(buffer)
-			if err != nil {
-				panic(err)
-			}
-			if err := connection.handleRecv(buffer[:n]); err != nil {
-				fmt.Println("Failed to handle the latest socket message!")
-				return
-			}
+func (connection *Connection) Start(teamId uint, teamName string) {
+
+	if err := connection.sendLoginPacket(teamId, teamName); err != nil {
+		fmt.Printf("Failed to send login packet: %v\n", err)
+		return
+	}
+
+	buffer := make([]byte, 4096)
+	for {
+		n, err := connection.reader.Read(buffer)
+		if err != nil {
+			panic(err)
 		}
-	}()
+		if err := connection.handleRecv(buffer[:n]); err != nil {
+			fmt.Println("Failed to handle the latest socket message!")
+			return
+		}
+	}
 }
 
-func (connection *Connection) SendActions(plannedActions []actions.Action) error {
-	for _, action := range plannedActions {
+func (connection *Connection) sendLoginPacket(teamId uint, teamName string) error {
+	loginPacket, err := schmeas.NewLoginRequest(teamId, teamName).Marshal()
+	if err != nil {
+		return fmt.Errorf("Error marshaling login request: %v\n", err)
+	}
 
-		buffer, err := action.Marshal()
-		if err != nil {
-			return fmt.Errorf("error marshaling action: %v", err)
-		}
+	if err := connection.Send(loginPacket); err != nil {
+		return fmt.Errorf("Error sending login request: %v\n", err)
+	}
+	return nil
+}
 
-		if _, err := (*connection.socket).Write(buffer); err != nil {
-			return fmt.Errorf("error sending action to server: %v", err)
-		}
+func (connection *Connection) SendString(message string) error {
+	if _, err := (*connection.socket).Write([]byte(message)); err != nil {
+		return fmt.Errorf("error sending data to server: %v", err)
+	}
+	return nil
+}
+
+func (connection *Connection) Send(buffer []byte) error {
+	if _, err := (*connection.socket).Write(buffer); err != nil {
+		return fmt.Errorf("error sending data to server: %v", err)
+	}
+	return nil
+}
+
+func (connection *Connection) SendActions(plannedActions []schema_action.Action) error {
+	clientPacket, err := schmeas.NewClientPacket(plannedActions).Marshal()
+	if err != nil {
+		return fmt.Errorf("error marshaling client packet: %v", err)
+	}
+
+	if err := connection.Send(clientPacket); err != nil {
+		return fmt.Errorf("error sending client packet: %v", err)
 	}
 	return nil
 }
@@ -71,12 +100,13 @@ func (connection *Connection) handleRecv(buffer []byte) error {
 
 	queue := connection.GetActionQueue()
 	plannedActions := queue.GetAll()
-	if connection.onTickCallback != nil {
-		connection.onTickCallback(connection.game)
-	}
 	// send all the actions to the server
 	if err := connection.SendActions(plannedActions); err != nil {
 		return fmt.Errorf("error sending actions to server: %v", err)
+	}
+
+	if connection.onTickCallback != nil {
+		connection.onTickCallback(connection.game)
 	}
 
 	return nil
@@ -96,8 +126,4 @@ func (connection *Connection) GetActionQueue() *actions.ActionQueue {
 
 func (connection *Connection) SetTickCallback(callback func(*shared.Game)) {
 	connection.onTickCallback = callback
-}
-
-func (connection *Connection) AddAction(action actions.Action) {
-	connection.actionQueue.Add(action)
 }
