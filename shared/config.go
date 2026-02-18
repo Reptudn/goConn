@@ -13,53 +13,70 @@ const (
 type UnitConfig struct {
 	Name                   string
 	UnitType               UnitType
-	Cost                   uint64
-	Hp                     uint64
-	BaseActionCooldown     uint64
-	MaxActionCooldown      uint64
-	BalancePerCooldownStep uint64
-	DamageCore             uint64
-	DamageUnit             uint64
-	DamageDeposit          uint64
-	DamageWall             uint64
-	DamageBomb             uint64
+	Cost                   uint
+	Hp                     uint
+	BaseActionCooldown     uint
+	MaxActionCooldown      uint
+	BalancePerCooldownStep uint
+	DamageCore             uint
+	DamageUnit             uint
+	DamageDeposit          uint
+	DamageWall             uint
+	DamageBomb             uint
 	BuildType              BuildType
 }
 
 type Config struct {
-	GridSize          uint64
-	IdleIncome        uint64
-	IdleIncomeTimeout uint64
-	DepositHp         uint64
-	DepositIncome     uint64
-	GemPileIncome     uint64
-	CoreHp            uint64
-	CoreSpawnCooldown uint64
-	InitialBalance    uint64
-	WallHp            uint64
-	WallBuildCost     uint64
-	BombCountdown     uint64
-	BombThrowCost     uint64
-	BombReach         uint64
-	BombDamageCore    uint64
-	BombDamageUnit    uint64
-	BombDamageDeposit uint64
+	GridSize          uint
+	IdleIncome        uint
+	IdleIncomeTimeout uint
+	DepositHp         uint
+	DepositIncome     uint
+	GemPileIncome     uint
+	CoreHp            uint
+	CoreSpawnCooldown uint
+	InitialBalance    uint
+	WallHp            uint
+	WallBuildCost     uint
+	BombCountdown     uint
+	BombThrowCost     uint
+	BombReach         uint
+	BombDamageCore    uint
+	BombDamageUnit    uint
+	BombDamageDeposit uint
 	Units             []UnitConfig
 }
 
 type Game struct {
-	ElapsedTicks uint64
+	ElapsedTicks uint
 	Config       Config
-	MyTeamId     uint64
+	MyTeamId     uint
 	Objects      []Object
 }
 
-func (game *Game) GetObjectById(id uint64) *Object {
-	return &game.Objects[0]
+func (game *Game) GetObjectById(id uint) (*Object, error) {
+	for _, object := range game.Objects {
+		if object.Id == id {
+			return &object, nil
+		}
+	}
+	return nil, fmt.Errorf("object with id %d not found", id)
 }
 
 func (game *Game) GetObjectFromPosition(pos Position) *Object {
 	return &game.Objects[0]
+}
+
+func (game *Game) GetTeamUnits() []*Object {
+	var units []*Object
+
+	for _, object := range game.Objects {
+		if object.IsAlly(game.MyTeamId) {
+			units = append(units, &object)
+		}
+	}
+
+	return units
 }
 
 func (game *Game) GetObjectsFromFilter(filter func(object *Object) bool) []*Object {

@@ -3,11 +3,11 @@ package actions
 type ActionBuild struct {
 	Type   string `json:"type"` // "build"‚
 	UnitId uint   `json:"unit_id"`
-	X      int    `json:"x"`
-	Y      int    `json:"y"`
+	X      uint   `json:"x"`
+	Y      uint   `json:"y"`
 }
 
-func NewActionBuild(unitId uint, x int, y int) ActionBuild {
+func NewActionBuild(unitId uint, x uint, y uint) ActionBuild {
 	return ActionBuild{
 		Type:   "build",
 		UnitId: unitId,

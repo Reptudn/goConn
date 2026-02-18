@@ -14,12 +14,12 @@ import (
 type Connection struct {
 	socket         *net.Conn
 	reader         *bufio.Reader
-	game           *shared.Game
+	Game           *shared.Game
 	onTickCallback func(*shared.Game)
 	actionQueue    *actions.ActionQueue
 }
 
-func NewConnection(serverAddr string) (*Connection, error) {
+func NewConnection(serverAddr string, selfTeamId uint) (*Connection, error) {
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to server: %v", err)
@@ -28,7 +28,7 @@ func NewConnection(serverAddr string) (*Connection, error) {
 	return &Connection{
 		socket:         &conn,
 		reader:         bufio.NewReader(conn),
-		game:           &shared.Game{},
+		Game:           &shared.Game{MyTeamId: selfTeamId},
 		onTickCallback: nil,
 		actionQueue:    actions.NewActionQueue(100),
 	}, nil
@@ -47,7 +47,7 @@ func (connection *Connection) Start(teamId uint, teamName string) {
 		if err != nil {
 			panic(err)
 		}
-		if err := connection.handleRecv(buffer[:n]); err != nil {
+		if err := connection.handleReceive(buffer[:n]); err != nil {
 			fmt.Println("Failed to handle the latest socket message!")
 			return
 		}
@@ -92,11 +92,13 @@ func (connection *Connection) SendActions(plannedActions []schema_action.Action)
 	return nil
 }
 
-func (connection *Connection) handleRecv(buffer []byte) error {
+func (connection *Connection) handleReceive(buffer []byte) error {
 
-	if err := connection.parseGameState(buffer); err != nil {
-		return fmt.Errorf("error parsing game state: %v", err)
+	tick, err := NewGameTick(buffer)
+	if err != nil {
+		return fmt.Errorf("error parsing game tick: %v", err)
 	}
+	tick.UpdateGame(connection.Game)
 
 	queue := connection.GetActionQueue()
 	plannedActions := queue.GetAll()
@@ -106,7 +108,7 @@ func (connection *Connection) handleRecv(buffer []byte) error {
 	}
 
 	if connection.onTickCallback != nil {
-		connection.onTickCallback(connection.game)
+		connection.onTickCallback(connection.Game)
 	}
 
 	return nil
@@ -117,7 +119,7 @@ func (connection *Connection) Close() error {
 }
 
 func (connection *Connection) GetGame() *shared.Game {
-	return connection.game
+	return connection.Game
 }
 
 func (connection *Connection) GetActionQueue() *actions.ActionQueue {
