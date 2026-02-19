@@ -10,12 +10,36 @@ import (
 	"github.com/Reptudn/goConn/shared/schmeas/actions"
 )
 
+// CoreGameBot represents a game bot instance that connects to the game server.
+// It provides a clean API for controlling units and interacting with the game.
 type CoreGameBot struct {
 	conn     *internal.Connection
 	teamName string
 	teamId   uint
 }
 
+// NewCoreGameBot creates a new game bot with the given team name.
+// It reads the team ID from the first command line argument and server
+// connection details from environment variables (SERVER_IP and SERVER_PORT).
+//
+// Args:
+//   - teamName: The name of your bot/team
+//
+// Returns a new CoreGameBot instance or an error if connection fails.
+//
+// Environment Variables:
+//   - SERVER_IP: Server IP address (default: 127.0.0.1)
+//   - SERVER_PORT: Server port (default: 4444)
+//
+// Command Line Args:
+//   - args[1]: Team ID (required)
+//
+// Example:
+//
+//	bot, err := bot.NewCoreGameBot("MyBot")
+//	if err != nil {
+//	    panic(err)
+//	}
 func NewCoreGameBot(teamName string) (*CoreGameBot, error) {
 
 	envIp, exists := os.LookupEnv("SERVER_IP")
