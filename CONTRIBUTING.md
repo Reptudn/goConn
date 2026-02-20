@@ -1,10 +1,10 @@
-# Contributing to goConn
+# Contributing to go-client-lib
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/Reptudn/goConn.git
-cd goConn
+git clone https://github.com/42core-team/go-client-lib.git
+cd go-client-lib
 go mod download
 go test ./...
 ```

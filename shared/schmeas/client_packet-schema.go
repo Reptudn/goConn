@@ -3,7 +3,7 @@ package schmeas
 import (
 	"encoding/json"
 
-	"github.com/Reptudn/goConn/shared/schmeas/actions"
+	"github.com/42core-team/go-client-lib/shared/schmeas/actions"
 )
 
 type ClientPacket struct {

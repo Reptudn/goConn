@@ -14,8 +14,8 @@ go get github.com/Reptudn/goConn
 package main
 
 import (
-	goconn "github.com/Reptudn/goConn"
-	"github.com/Reptudn/goConn/shared"
+	goconn "github.com/42core-team/go-client-lib"
+	"github.com/42core-team/go-client-lib/shared"
 )
 
 var coreBot *goconn.CoreGameBot

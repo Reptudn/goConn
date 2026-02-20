@@ -50,8 +50,8 @@ Package will appear on pkg.go.dev within 30 minutes.
 
 ### Users can access:
 ```go
-import goconn "github.com/Reptudn/goConn"
-import "github.com/Reptudn/goConn/shared"
+import goconn "github.com/42core-team/go-client-lib"
+import "github.com/42core-team/go-client-lib/shared"
 
 goconn.NewCoreGameBot()
 goconn.(*CoreGameBot).CreateUnit()
@@ -121,13 +121,13 @@ cd test-import
 go mod init test-app
 
 # Add your package
-go get github.com/Reptudn/goConn
+go get github.com/42core-team/go-client-lib
 
 # Try importing
 cat > main.go << 'EOF'
 package main
 
-import goconn "github.com/Reptudn/goConn"
+import goconn "github.com/42core-team/go-client-lib"
 
 func main() {
     _ = goconn.CoreGameBot{}

@@ -5,9 +5,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Reptudn/goConn/internal"
-	"github.com/Reptudn/goConn/shared"
-	"github.com/Reptudn/goConn/shared/schmeas/actions"
+	"github.com/42core-team/go-client-lib/internal"
+	"github.com/42core-team/go-client-lib/shared"
+	"github.com/42core-team/go-client-lib/shared/schmeas/actions"
 )
 
 // CoreGameBot represents a game bot instance that connects to the game server.

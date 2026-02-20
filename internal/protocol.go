@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Reptudn/goConn/shared"
+	"github.com/42core-team/go-client-lib/shared"
 )
 
 type incomingObject struct {

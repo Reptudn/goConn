@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/Reptudn/goConn/actions"
-	"github.com/Reptudn/goConn/shared"
-	"github.com/Reptudn/goConn/shared/schmeas"
-	schema_action "github.com/Reptudn/goConn/shared/schmeas/actions"
+	"github.com/42core-team/go-client-lib/actions"
+	"github.com/42core-team/go-client-lib/shared"
+	"github.com/42core-team/go-client-lib/shared/schmeas"
+	schema_action "github.com/42core-team/go-client-lib/shared/schmeas/actions"
 )
 
 type Connection struct {

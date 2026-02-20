@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	goconn "github.com/Reptudn/goConn"
-	"github.com/Reptudn/goConn/shared"
+	goconn "github.com/42core-team/go-client-lib"
+	"github.com/42core-team/go-client-lib/shared"
 )
 
 const teamName = "GoConnBotExample"

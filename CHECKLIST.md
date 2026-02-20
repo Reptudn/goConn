@@ -6,7 +6,7 @@
 - [ ] Add godoc comments to all public functions in `bot/` package
 - [ ] Add godoc comments to all public types in `shared/` package
 - [ ] Ensure `internal/` package is truly private (not imported by public API)
-- [ ] Update `go.mod` with proper module path: `module github.com/Reptudn/goConn`
+- [ ] Update `go.mod` with proper module path: `module github.com/42core-team/go-client-lib`
 - [ ] Create `README.md` with quick start guide
 - [ ] Create `LICENSE` file (MIT recommended)
 - [ ] Create `CONTRIBUTING.md` for developers
@@ -16,7 +16,7 @@
 - [ ] Test imports work correctly
   ```bash
   # In a new directory
-  go get github.com/Reptudn/goConn
+  go get github.com/42core-team/go-client-lib
   ```
 - [ ] Run all tests: `go test ./...`
 - [ ] Check code coverage: `go test -cover ./...`
@@ -57,7 +57,7 @@
 - [ ] Verify `go get` works in a fresh environment
 - [ ] Add badge to README.md:
   ```markdown
-  [![Go Reference](https://pkg.go.dev/badge/github.com/Reptudn/goConn.svg)](https://pkg.go.dev/github.com/Reptudn/goConn)
+  [![Go Reference](https://pkg.go.dev/badge/github.com/42core-team/go-client-lib.svg)](https://pkg.go.dev/github.com/42core-team/go-client-lib)
   ```
 
 ## Version Management (Future Releases)
@@ -70,8 +70,8 @@ git tag -a v1.1.0 -m "Add new features"
 git push origin v1.1.0
 
 # Users can then use:
-go get github.com/Reptudn/goConn@v1.1.0
-go get github.com/Reptudn/goConn@latest
+go get github.com/42core-team/go-client-lib@v1.1.0
+go get github.com/42core-team/go-client-lib@latest
 ```
 
 ## Public API Best Practices

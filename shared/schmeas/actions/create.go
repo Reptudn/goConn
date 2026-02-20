@@ -1,6 +1,6 @@
 package actions
 
-import "github.com/Reptudn/goConn/shared"
+import "github.com/42core-team/go-client-lib/shared"
 
 type ActionCreate struct {
 	Type     string          `json:"type"`      // "create"

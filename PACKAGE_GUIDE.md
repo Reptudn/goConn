@@ -83,7 +83,7 @@ Just create a GitHub release and wait ~10 minutes for indexing.
 
 Users will see your package at:
 ```
-https://pkg.go.dev/github.com/Reptudn/goConn
+https://pkg.go.dev/github.com/42core-team/go-client-lib
 ```
 
 Make sure to add godoc comments:
@@ -145,7 +145,7 @@ go get github.com/Reptudn/goConn@latest  # Latest version
 1. Move your current `main.go` to `examples/basic_bot/main.go`
 2. Add godoc comments to all public functions
 3. Push to GitHub with a release tag
-4. Users can now: `go get github.com/Reptudn/goConn`
+4. Users can now: `go get github.com/42core-team/go-client-lib`
 
 Done! 🎉
 
