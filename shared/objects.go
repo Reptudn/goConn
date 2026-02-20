@@ -70,8 +70,7 @@ func (o *Object) Tick() {
 	switch data := o.ObjectData.(type) {
 	case UnitData:
 		if data.ActionCooldown == nil {
-			cooldown := uint(0)
-			data.ActionCooldown = &cooldown
+			data.ActionCooldown = new(uint(0))
 		}
 		if *data.ActionCooldown > 0 {
 			*data.ActionCooldown--

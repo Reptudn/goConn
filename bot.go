@@ -54,6 +54,10 @@ func NewCoreGameBot(teamName string) (*CoreGameBot, error) {
 		envPort = "4444"
 	}
 
+	if len(os.Args) < 2 {
+		return nil, fmt.Errorf("team id not provided as first argument")
+	}
+
 	id := os.Args[1]
 	if id == "" {
 		return nil, fmt.Errorf("team id not provided as first argument")
