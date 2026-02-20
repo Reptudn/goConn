@@ -14,24 +14,27 @@ go get github.com/Reptudn/goConn
 package main
 
 import (
-	"github.com/Reptudn/goConn/bot"
+	goconn "github.com/Reptudn/goConn"
 	"github.com/Reptudn/goConn/shared"
 )
+
+var coreBot *goconn.CoreGameBot
 
 func tick(game *shared.Game) {
 	// Your bot logic here
 	for _, unit := range game.GetTeamUnits() {
-		bot.CreateUnit(shared.UnitWarrior)
-		bot.Move(unit, shared.NewPosition(unit.Pos.X+1, unit.Pos.Y))
+		_ = coreBot.CreateUnit(shared.UnitWarrior)
+		_ = coreBot.Move(unit, shared.NewPosition(unit.Pos.X+1, unit.Pos.Y))
 	}
 }
 
 func main() {
-	bot, err := bot.NewCoreGameBot("MyBotName")
+	bot, err := goconn.NewCoreGameBot("MyBotName")
 	if err != nil {
 		panic(err)
 	}
-	bot.Run(tick)
+	coreBot = bot
+	_ = coreBot.Run(tick)
 }
 ```
 
@@ -44,10 +47,9 @@ func main() {
 
 ## Documentation
 
-- See `/bot` package for the main Bot API
+- See the root `goConn` package for the main Bot API
 - See `/shared` package for game objects and types
 
 ## License
 
 MIT
-

@@ -50,12 +50,12 @@ Package will appear on pkg.go.dev within 30 minutes.
 
 ### Users can access:
 ```go
-import "github.com/Reptudn/goConn/bot"
+import goconn "github.com/Reptudn/goConn"
 import "github.com/Reptudn/goConn/shared"
 
-bot.NewCoreGameBot()
-bot.CreateUnit()
-bot.Move()
+goconn.NewCoreGameBot()
+goconn.(*CoreGameBot).CreateUnit()
+goconn.(*CoreGameBot).Move()
 shared.Game
 shared.Object
 shared.Position
@@ -78,7 +78,7 @@ internal.Socket
 - ✅ `PACKAGE_GUIDE.md` - Detailed setup guide
 - ✅ `CHECKLIST.md` - Full publication checklist
 - ✅ `examples/basic_bot/main.go` - Example usage
-- ✅ Updated `bot/bot.go` with godoc comments
+- ✅ Updated `bot.go` with godoc comments
 
 ---
 
@@ -87,8 +87,8 @@ internal.Socket
 Add to top of each public package:
 
 ```go
-// Package bot provides a clean API for game server bot control.
-package bot
+// Package goConn provides a clean API for game server bot control.
+package goConn
 
 // Exported types need comments:
 // Type Name does something useful.
@@ -127,10 +127,10 @@ go get github.com/Reptudn/goConn
 cat > main.go << 'EOF'
 package main
 
-import "github.com/Reptudn/goConn/bot"
+import goconn "github.com/Reptudn/goConn"
 
 func main() {
-    _ = bot.CoreGameBot{}
+    _ = goconn.CoreGameBot{}
 }
 EOF
 
@@ -148,11 +148,10 @@ go build  # Should work!
 
 **"Can't import internal package?"**
 - Good! It's supposed to be hidden
-- Only use `bot` and `shared` packages
+- Only use `goConn` and `shared` packages
 
 **"Package not on pkg.go.dev?"**
 - Created a GitHub release? (Important!)
 - Just a tag won't work
 - Wait 30 minutes for indexing
-
 
