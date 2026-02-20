@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"net"
 
@@ -17,9 +18,11 @@ type Connection struct {
 	Game           *shared.Game
 	onTickCallback func(*shared.Game)
 	actionQueue    *actions.ActionQueue
+	ctx            context.Context
+	timeout        context.CancelFunc
 }
 
-func NewConnection(serverAddr string, selfTeamId uint) (*Connection, error) {
+func NewConnection(serverAddr string, selfTeamId uint, ctx *context.Context) (*Connection, error) {
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to server: %v", err)
@@ -34,11 +37,16 @@ func NewConnection(serverAddr string, selfTeamId uint) (*Connection, error) {
 	}, nil
 }
 
-func (connection *Connection) Start(teamId uint, teamName string) {
+func (connection *Connection) Start(teamId uint, teamName string) error {
+	defer func() {
+		if err := connection.Close(); err != nil {
+			fmt.Printf("Error closing connection: %v\n", err)
+			return
+		}
+	}()
 
 	if err := connection.sendLoginPacket(teamId, teamName); err != nil {
-		fmt.Printf("Failed to send login packet: %v\n", err)
-		return
+		return fmt.Errorf("Failed to send login packet: %v\n", err)
 	}
 
 	buffer := make([]byte, 4096)
@@ -48,10 +56,10 @@ func (connection *Connection) Start(teamId uint, teamName string) {
 			panic(err)
 		}
 		if err := connection.handleReceive(buffer[:n]); err != nil {
-			fmt.Println("Failed to handle the latest socket message!")
-			return
+			return fmt.Errorf("failed to handle the latest socket message")
 		}
 	}
+	return nil
 }
 
 func (connection *Connection) sendLoginPacket(teamId uint, teamName string) error {

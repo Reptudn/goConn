@@ -120,14 +120,10 @@ func (bot *CoreGameBot) Build(builder *shared.Object, pos shared.Position) error
 	return nil
 }
 
-func (bot *CoreGameBot) Run(callback func(game *shared.Game)) {
+func (bot *CoreGameBot) Run(callback func(game *shared.Game)) error {
 	bot.conn.SetTickCallback(callback)
-	bot.conn.Start(bot.teamId, bot.teamName)
-	defer bot.stop() // XXX: defer probably not needed since Start() is blocking, but just in case
-}
-
-func (bot *CoreGameBot) stop() {
-	if err := bot.conn.Close(); err != nil {
-		fmt.Printf("Error closing connection: %v\n", err)
+	if err := bot.conn.Start(bot.teamId, bot.teamName); err != nil {
+		return err
 	}
+	return nil
 }
