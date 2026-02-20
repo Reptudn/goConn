@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/Reptudn/goConn/bot"
+	"github.com/Reptudn/goConn"
 	"github.com/Reptudn/goConn/shared"
 )
 
 const teamName = "GoConnBotExample"
 
-var CoreGameBot *bot.CoreGameBot
+var CoreGameBot *goConn.CoreGameBot
 
 func tick(game *shared.Game) {
 	game.Log("Tick %d", game.ElapsedTicks)
@@ -25,7 +25,7 @@ func tick(game *shared.Game) {
 }
 
 func main() {
-	cgb, err := bot.NewCoreGameBot(teamName)
+	cgb, err := goConn.NewCoreGameBot(teamName)
 	if err != nil {
 		fmt.Printf("Error creating bot: %v\n", err)
 		return
