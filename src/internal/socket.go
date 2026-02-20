@@ -22,7 +22,13 @@ type Connection struct {
 	timeout        context.CancelFunc
 }
 
-func NewConnection(serverAddr string, selfTeamId uint, ctx *context.Context) (*Connection, error) {
+const (
+	// BufferSize defines the size of the read buffer for incoming messages
+	// Should be larger than your maximum expected message size
+	BufferSize = 65536 // 64KB - can handle most game server messages
+)
+
+func NewConnection(serverAddr string, selfTeamId uint) (*Connection, error) {
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to server: %v", err)
@@ -49,7 +55,7 @@ func (connection *Connection) Start(teamId uint, teamName string) error {
 		return fmt.Errorf("Failed to send login packet: %v\n", err)
 	}
 
-	buffer := make([]byte, 4096)
+	buffer := make([]byte, BufferSize)
 	for {
 		n, err := connection.reader.Read(buffer)
 		if err != nil {
